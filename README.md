@@ -2,6 +2,8 @@
 
 This is the [Mirador IIIF Viewer](https://projectmirador.org) packaged as a desktop app with an embedded annotation endpoint, and saves annotations to a local sqlite database.
 
+![](https://i.imgur.com/go7TBjh.png)
+
 This is a proof of concept, slightly usable at the moment.
 A lot of things are missing:
 
@@ -36,7 +38,8 @@ Package static assets
 
 	go build -o "build/macos/IIIF Annotation Studio.app/Contents/MacOS/IIIF Annotation Studio.app"
 
-Run `IIIF Annotation Studio.app` from build/macos
+Run `IIIF Annotation Studio.app` from build/macos  
+(if you trust me there is a ready made build in [releases](https://github.com/atomotic/iiif-annotation-studio/releases))
 
 — Build for linux. GTK3 and GtkWebkit2 required, not yet tested.
 
