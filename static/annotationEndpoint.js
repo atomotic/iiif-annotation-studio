@@ -1,5 +1,5 @@
 (function($) {
-  $.DemetsiiifyEndpoint = function(options) {
+  $.AnnotationStudioEndpoint = function(options) {
     jQuery.extend(
       this,
       {
@@ -16,7 +16,7 @@
     this.init();
   };
 
-  $.DemetsiiifyEndpoint.prototype = {
+  $.AnnotationStudioEndpoint.prototype = {
     init: function() {
       // NOP
     },
