@@ -55,7 +55,7 @@ func AnnotationHandler(w http.ResponseWriter, r *http.Request) {
 		AnnotationWithID, _ := json.Marshal(annotation)
 		statement, _ := db.Prepare("INSERT INTO annotations (annoid, created_at, target, manifest, body) VALUES (?, ?, ?, ?, ?)")
 		statement.Exec(annoid, time.Now(), annotation.Canvas(), annotation.Manifest(), AnnotationWithID)
-		fmt.Fprintf(w, string(body))
+		fmt.Fprintf(w, string(AnnotationWithID))
 
 	case http.MethodPut:
 		http.Error(w, "NOT IMPLEMENTED", 501)
