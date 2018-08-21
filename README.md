@@ -54,12 +54,12 @@ The first run creates the sqlite database `$HOME/.annotations/annotations.db` if
 	➜  ~ sqlite3 ~/.annotations/annotations.db .schema
 	CREATE TABLE annotations (
 			id INTEGER PRIMARY KEY,
-			uuid VARCHAR,
+			annoid VARCHAR,
 			created_at DATETIME,
 			target VARCHAR,
 			manifest VARCHAR,
 			body TEXT);
-	CREATE UNIQUE INDEX annotation_id ON annotations (uuid);
+	CREATE UNIQUE INDEX annotation_id ON annotations (annoid);
 	
 ## Disclaimer
 
