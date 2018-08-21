@@ -66,7 +66,7 @@ Is this another Electron app? NO, is made in golang with [zserge/webview](https:
 
 ## See also
 
-[Mirador Desktop](https://github.com/ProjectMirador/mirador-desktop)
+[Mirador Desktop](https://github.com/ProjectMirador/mirador-desktop): Electron based, annotations on LocalStorage
 
 ## Acknowledgement
 
