@@ -43,6 +43,9 @@ func main() {
 	statement, _ = db.Prepare("CREATE UNIQUE INDEX IF NOT EXISTS annotation_id ON annotations (annoid);")
 	statement.Exec()
 
+	statement, _ = db.Prepare("CREATE INDEX IF NOT EXISTS canvas ON annotations (target);")
+	statement.Exec()
+
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
