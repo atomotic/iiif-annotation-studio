@@ -1,0 +1,4 @@
+.DS_Store
+bindata.go
+vendor
+build/macos/IIIF\ Annotation\ Studio.app/Contents/MacOS
