@@ -11,13 +11,13 @@
 		<key>CFBundleExecutable</key>
 		<string>MacOS/IIIF Annotation Studio.app</string>
 		<key>CFBundleIdentifier</key>
-		<string>atomotic</string>
+		<string>com.atomotic.iiif-annotation-studio</string>
 		<key>CFBundleVersion</key>
-		<string>1.0</string>
+		<string>0.1</string>
 		<key>CFBundleGetInfoString</key>
 		<string>IIIF Annotation Studio</string>
 		<key>CFBundleShortVersionString</key>
-		<string>1.0</string>
+		<string>0.1</string>
 		<key>CFBundleIconFile</key>
 		<string>icon.icns</string>
 		<key>NSAppTransportSecurity</key>
