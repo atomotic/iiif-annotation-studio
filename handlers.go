@@ -18,7 +18,11 @@ func AnnotationHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		var body string
 		var list []string
-		q, _ := r.URL.Query()["q"]
+		q := r.URL.Query()["q"]
+		if len(q) == 0 {
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
 		rows, err := db.Query("SELECT body FROM annotations where target=?", q[0])
 		if err != nil {
 			log.Fatal(err)
@@ -58,10 +62,10 @@ func AnnotationHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(AnnotationWithID))
 
 	case http.MethodPut:
-		http.Error(w, "NOT IMPLEMENTED", 501)
+		http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 
 	case http.MethodDelete:
-		http.Error(w, "NOT IMPLEMENTED", 501)
+		http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
 
 	}
 }
