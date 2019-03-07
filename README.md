@@ -2,19 +2,19 @@
 
 This is the [Mirador IIIF Viewer](https://projectmirador.org) packaged as a desktop app with an embedded annotation endpoint that saves annotations to a local sqlite database.
 
-![](https://i.imgur.com/go7TBjh.png)
+![](https://gist.githubusercontent.com/atomotic/f621ab4364a0bd520dd1066bc4d0e439/raw/1ae8d554576bbe0ecae6b5630dbaa262e26d8615/iiif-annotation-studio.png)
 
 This is a proof of concept, slightly usable at the moment.
 A lot of things are missing:
 
 - [x] annotation api: create
-- [ ] annotation api: update and delete
+- [x] annotation api: update and delete
 - [ ] UI: a page listing all manifests and relative annotations
 - [ ] export (and import) of annotations
 - [ ] builds for linux (AppImage) and Windows
 - [ ] share annotations (maybe using DAT)
 
-## Building
+## Build
 
 Clone
 
@@ -48,7 +48,7 @@ Run `IIIF Annotation Studio.app` from build/macos
 
 ## Backup
 
-The first run creates the sqlite database `$HOME/.annotations/annotations.db` if not existing. To backup annotations is enough to backup the sqlite file
+The first run creates the sqlite database `$HOME/.annotations/annotations.db` if not existing. Just backup this file.
 
     ➜  ~ sqlite3 ~/.annotations/annotations.db .schema
     CREATE TABLE annotations (
