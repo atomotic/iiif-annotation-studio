@@ -1,5 +1,5 @@
 (function($) {
-  $.AnnotationStudioEndpoint = function(options) {
+  $.AnnotationDesktopEndpoint = function(options) {
     jQuery.extend(
       this,
       {
@@ -16,7 +16,7 @@
     this.init();
   };
 
-  $.AnnotationStudioEndpoint.prototype = {
+  $.AnnotationDesktopEndpoint.prototype = {
     init: function() {
       // NOP
     },
@@ -26,11 +26,11 @@
 
       this.annotationsList = [];
       jQuery.ajax({
-        url: "/iiif/annotation",
+        url: "/annotation/list",
         type: "GET",
         dataType: "json",
         data: {
-          q: options.uri,
+          canvas: options.uri,
           limit: 10000
         },
         success: function(data) {
@@ -58,10 +58,11 @@
     },
 
     deleteAnnotation: function(annotationID, returnSuccess, returnError) {
-      console.log(annotationID);
+      split = annotationID.split("/");
+      ID = split[split.length - 1];
       jQuery.ajax({
-        url: annotationID,
-        type: "DELETE",
+        url: "/annotation/delete/" + ID,
+        type: "POST",
         dataType: "json",
         success: function(data) {
           returnSuccess();
@@ -73,11 +74,15 @@
     },
 
     update: function(annotation, returnSuccess, returnError) {
+      // console.log(`------UPDATE ${annotation["@id"]}`);
+      split = annotation["@id"].split("/");
+      ID = split[split.length - 1];
+
       var this_ = this;
       delete annotation.endpoint;
       jQuery.ajax({
-        url: annotation["@id"],
-        type: "PUT",
+        url: "/annotation/update/" + ID,
+        type: "POST",
         dataType: "json",
         data: JSON.stringify(annotation),
         contentType: "application/json; charset=utf-8",
@@ -95,7 +100,7 @@
     create: function(annotation, returnSuccess, returnError) {
       var _this = this;
       jQuery.ajax({
-        url: "/iiif/annotation",
+        url: "/annotation/create",
         type: "POST",
         dataType: "json",
         data: JSON.stringify(annotation),
