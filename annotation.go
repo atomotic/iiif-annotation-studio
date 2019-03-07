@@ -1,5 +1,8 @@
 package main
 
+import "encoding/json"
+
+// Annotation struct
 type Annotation struct {
 	Context    string   `json:"@context"`
 	Type       string   `json:"@type"`
@@ -32,22 +35,20 @@ type Annotation struct {
 	} `json:"resource"`
 }
 
+// Manifest of the annotation
 func (a *Annotation) Manifest() string {
 	return a.On[0].Within.ID
 }
 
+// Canvas of the annotation
 func (a *Annotation) Canvas() string {
 	return a.On[0].Full
 }
 
-var AnnotationListTemplate = `
-{
-	"@context": "http://iiif.io/api/presentation/2/context.json",
-	"@id": "http://annotation-studio.loc/annotation/list/1",
-	"@type": "sc:AnnotationList",
-  
-	"resources": [
-	    {{ StringsJoin . ", " }}
-	]
-  }
-`
+// AnnotationList is a list of annotation
+type AnnotationList struct {
+	Context   string            `json:"@context"`
+	ID        string            `json:"@id"`
+	Type      string            `json:"@type"`
+	Resources []json.RawMessage `json:"resources"`
+}
