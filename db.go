@@ -2,14 +2,15 @@ package main
 
 import (
 	"database/sql"
-	"log"
+
+	"github.com/rs/zerolog/log"
 )
 
 // InitDB create the database table and indexes
 func InitDB(dsn string) *sql.DB {
 	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
-		log.Fatal("error db")
+		log.Fatal().Msg("database init error")
 	}
 	statement, _ := db.Prepare(`CREATE TABLE IF NOT EXISTS annotations (
 		id INTEGER PRIMARY KEY, 

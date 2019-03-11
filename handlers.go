@@ -38,13 +38,19 @@ func List(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	rows, err := db.Query("SELECT body FROM annotations where target=?", canvas[0])
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Error().Err(err).Str("action", "list").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
 	defer rows.Close()
 	for rows.Next() {
 		err := rows.Scan(&body)
 		if err != nil {
-			log.Fatal().Err(err)
+			log.Error().Err(err).Str("action", "list").Msg("db error")
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("500"))
+			return
 		}
 		list.Resources = append(list.Resources, body)
 	}
@@ -56,30 +62,31 @@ func List(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err := enc.Encode(list); err != nil {
-		fmt.Println(err)
+		log.Error().Err(err).Str("action", "list").Str("canvas", canvas[0]).Msg("annotation list error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
 
 }
 
 // Get retrieve a single annotation with database id
-// TODO: retrieve with annotation id
+// NOTE: just for test, not used by mirador
 func Get(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var body string
-	rows, err := db.Query("SELECT body FROM annotations where id=?", ps.ByName("id"))
+	err := db.QueryRow("SELECT body FROM annotations where id=?", ps.ByName("id")).Scan(&body)
+
 	if err != nil {
-		log.Fatal().Err(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&body)
-		if err != nil {
-			log.Fatal().Err(err)
-		}
-		fmt.Fprintf(w, body)
+		log.Error().Err(err).Str("action", "get").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, body)
 }
 
 // Delete an annotation
@@ -89,14 +96,20 @@ func Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var anno string
 	err := db.QueryRow("SELECT body FROM annotations where annoid = ?", ps.ByName("id")).Scan(&anno)
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Error().Err(err).Str("action", "delete").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
 
 	_, err = db.Exec("DELETE FROM annotations where annoid=?", ps.ByName("id"))
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Error().Err(err).Str("action", "delete").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
-	log.Info().Str("annotation-id", ps.ByName("id")).Msg("deleted")
+	log.Info().Str("annotation_id", ps.ByName("id")).Str("action", "delete").Msg("")
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, anno)
 }
@@ -106,14 +119,18 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		log.Error().Err(err).Str("action", "create").Msg("")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
 		return
 	}
 
 	var annotation Annotation
 	err = json.Unmarshal(body, &annotation)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		log.Error().Err(err).Str("action", "create").Msg("")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
 		return
 	}
 
@@ -122,7 +139,7 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	AnnotationWithID, _ := json.Marshal(annotation)
 	statement, _ := db.Prepare("INSERT INTO annotations (annoid, created_at, target, manifest, body) VALUES (?, ?, ?, ?, ?)")
 	statement.Exec(annoid, time.Now(), annotation.Canvas(), annotation.Manifest(), AnnotationWithID)
-	log.Info().Str("annotation-id", annoid).Msg("create")
+	log.Info().Str("annotation_id", annoid).Str("action", "create").Msg("")
 
 	fmt.Fprintf(w, string(AnnotationWithID))
 }
@@ -135,16 +152,21 @@ func Update(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		log.Error().Err(err).Str("action", "update").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
 		return
 	}
 
 	_, err = db.Exec("UPDATE annotations SET body=? WHERE annoid=?", body, annoid)
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Error().Err(err).Str("action", "update").Msg("db error")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("500"))
+		return
 	}
 
-	log.Info().Str("annotation-id", annoid).Msg("update")
+	log.Info().Str("annotation_id", annoid).Str("action", "update").Msg("")
 
 	fmt.Fprintf(w, string(body))
 }

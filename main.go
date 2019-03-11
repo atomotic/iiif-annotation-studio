@@ -10,6 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mitchellh/go-homedir"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/zserge/webview"
 )
@@ -26,13 +27,13 @@ func init() {
 }
 
 func main() {
-	log.Logger = log.Output(os.Stdout)
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	db = InitDB(annotationsDB)
 	router := httprouter.New()
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
-		log.Error().Msg("server err")
+		log.Fatal().Err(err).Msg("server failed to start")
 	}
 	defer ln.Close()
 	go func() {
@@ -49,9 +50,9 @@ func main() {
 			fileServer.ServeHTTP(w, r)
 		})
 
-		log.Info().Msg("# listening on " + ln.Addr().String())
+		log.Info().Str("address", "http://"+ln.Addr().String()).Msg("server started")
 		if err := http.Serve(ln, router); err != nil {
-			log.Fatal().Err(err).Msg("Startup failed")
+			log.Fatal().Err(err).Msg("server failed to start")
 		}
 
 	}()
