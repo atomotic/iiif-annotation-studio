@@ -124,7 +124,7 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	statement.Exec(annoid, time.Now(), annotation.Canvas(), annotation.Manifest(), AnnotationWithID)
 	log.Info().Str("annotation-id", annoid).Msg("create")
 
-	fmt.Fprintf(w, string(body))
+	fmt.Fprintf(w, string(AnnotationWithID))
 }
 
 // Update an annotation
